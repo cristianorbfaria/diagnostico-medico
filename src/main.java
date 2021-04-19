@@ -14,58 +14,120 @@ public class main {
 		do {
 			// Imprimir menu
 			menu();
-	        System.out.print("Digite aqui sua opção: ");
+	        System.out.print("\nDigite aqui sua opção:");
     		Scanner sc = new Scanner(System.in);
 	        opcao = Integer.parseInt(sc.nextLine());
 	        
 	        switch (opcao) {
 	        	case 1:	
 	        		List<Integer> sintomasSelecionados = informarSintomas();
-	            	System.out.println("Sintomas informados: " + diagnostico(sintomasSelecionados));
-	            	System.out.println("Deseja voltar ao menu principal? [Sn]");
+	            	System.out.println("\nSintomas informados: " +  sintomasSelecionados.toString()); 
+	            	System.out.println("\n***************** Diagnóstico *****************\n");
+	            	System.out.println(diagnostico(sintomasSelecionados));
+	            	System.out.println("\n***********************************************");
+	            	System.out.println("\nDeseja voltar ao menu principal? [S/N]");
 	            	String resposta = "s";
 	            	resposta = sc.next();
 	            	if (resposta.equalsIgnoreCase("n")) {
-	                    System.out.println("****** FIM DO PROGRAMA ******");
+	                    System.out.println("\n****** FIM DO PROGRAMA ******");
 	            		System.exit(0);
 	            	}
 	            	break;
                 case 0:
-                    System.out.println("****** FIM DO PROGRAMA ******");
+                    System.out.println("\n****** FIM DO PROGRAMA ******");
                     System.exit(0);
                 default:
-                    System.out.print("Opção Inválida!");
+                    System.out.println("\nOpção Inválida!");
                     break;
             }
 
 		} while(opcao != 0);
 		
-        System.out.println("****** FIM DO PROGRAMA ******");
+        System.out.println("\n****** FIM DO PROGRAMA ******");
         System.exit(0);
 	}
 	
 	private static void menu () {
         System.out.println(" ****** Sistema Diagnóstico Médico ******");
-        System.out.println(" * Escolha uma das opções abaixo *");
-        System.out.println(" * 1 -> Diagnóstico *");
-        System.out.println(" * 0 -> Sair *");
-        System.out.println(" ********************************************");	
+        System.out.println(" * Escolha uma das opções abaixo ********");
+        System.out.println(" * 1 -> Diagnóstico *********************");
+        System.out.println(" * 0 -> Sair ****************************");
+        System.out.println(" ****************************************");	
 	}
 	
 	private static String diagnostico (List<Integer> sintomasSelecionados) {
-		String resultadoFinal = sintomasSelecionados.toString();
+		int pontuacaoCovid19;
+		int pontuacaoGripe;
+		int pontuacaoDengue;		
 		
-		String[] provaveisDoencas = null;
+		pontuacaoCovid19 = getPontuacaoCovid19(sintomasSelecionados);
+		pontuacaoGripe = getPontuacaoGripe(sintomasSelecionados);
+		pontuacaoDengue = getPontuacaoDengue(sintomasSelecionados);
+		
+		if (pontuacaoCovid19 > pontuacaoGripe &&
+			pontuacaoCovid19 > pontuacaoDengue) {
+			return ">>>>>>>>>>>>>>>>>> Covid-19 <<<<<<<<<<<<<<<<<<<";
+		}
+		
+		if (pontuacaoGripe > pontuacaoCovid19 &&
+			pontuacaoGripe > pontuacaoDengue) {
+			return ">>>>>>>>>>>>>>>>>>>> Gripe <<<<<<<<<<<<<<<<<<<<";
+		}
+		
+		if (pontuacaoDengue > pontuacaoCovid19 &&
+			pontuacaoDengue > pontuacaoGripe) { 
+			return ">>>>>>>>>>>>>>>>>>> Dengue <<<<<<<<<<<<<<<<<<<<";
+		}
+		
+		return "> Impreciso, por favor informe mais sintomas. <";
+	}
+
+	private static int getPontuacaoCovid19 (List<Integer> sintomasSelecionados) {
+		int pontuacao = 0;
+			
 		int[] covid19 = getSintomasPorDoenca("covid-19");
 		
 		for (int i=0; i < covid19.length; i++) {
 			for (int k=0; k < sintomasSelecionados.size(); k++) {
 				if (covid19[i] == sintomasSelecionados.get(k)) {
+					pontuacao++;
 				}
 			}
 		}
 		
-		return resultadoFinal;
+		return pontuacao;		
+	}
+	
+	private static int getPontuacaoGripe(List<Integer> sintomasSelecionados) {
+		int pontuacao = 0;
+		
+		int[] gripe = getSintomasPorDoenca("gripe");
+		
+		for (int i=0; i < gripe.length; i++) {
+			for (int k=0; k < sintomasSelecionados.size(); k++) {
+				if (gripe[i] == sintomasSelecionados.get(k)) {
+					pontuacao++;
+				}
+			}
+		}
+		
+		return pontuacao;
+	}
+	
+	private static int getPontuacaoDengue(List<Integer> sintomasSelecionados) {
+		int pontuacao = 0;
+		
+		int[] dengue = getSintomasPorDoenca("dengue");
+		
+		for (int i=0; i < dengue.length; i++) {
+			for (int k=0; k < sintomasSelecionados.size(); k++) {
+				if (dengue[i] == sintomasSelecionados.get(k)) {
+					pontuacao++;
+				}
+			}
+		}
+		
+		return pontuacao;
 	}
 	
 	private static List<Integer> informarSintomas () {
@@ -76,7 +138,7 @@ public class main {
     	int i = 0;
     	
     	System.out.println("//////////////////////////////////////////////////////////////////////////");
-    	System.out.println("Para um melhor diagnóstico, será necessário informar pelo menos 3 sintomas!\n");
+    	System.out.println("\nPara um melhor diagnóstico, será necessário informar pelo menos 3 sintomas!\n");
     	
     	List<String> sintomas = getSintomas();
     	
@@ -86,19 +148,19 @@ public class main {
     	}
     	
     	do {
-    		System.out.println("Por favor informe o código do sintoma:");
+    		System.out.println("\nPor favor informe o código do sintoma:");
     		try {
     			codigoSintoma = sc.nextInt();
         		sintomasSelecionados.add(codigoSintoma);
         	    i++;
     		} catch (InputMismatchException e) {
                 sc.nextLine();
-                System.out.println("Código inválido! Tente novamente");
+                System.out.println("\nCódigo inválido! Tente novamente");
                 i--;
             }
     		
     	    if(i > 2) {
-    	    	System.out.println("Deseja informar mais um sintoma? [Sn]");
+    	    	System.out.println("\nDeseja informar mais um sintoma? [S/N]");
 	        	String resposta = sc.next();
 	        	if (resposta.equalsIgnoreCase("n")) {
 	        		break;
