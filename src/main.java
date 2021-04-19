@@ -21,7 +21,11 @@ public class main {
 	        switch (opcao) {
 	        	case 1:	
 	        		List<Integer> sintomasSelecionados = informarSintomas();
-	            	System.out.println("\nSintomas informados: " +  sintomasSelecionados.toString()); 
+	        		System.out.println("\nSintomas informados: ");
+	        		List<String> sintomas = getSintomas();
+	        		for (int i=0; i < sintomasSelecionados.size(); i++) {
+		            	System.out.println("- "+sintomas.get(sintomasSelecionados.get(i))); 	        			
+	        		}
 	            	System.out.println("\n***************** Diagnóstico *****************\n");
 	            	System.out.println(diagnostico(sintomasSelecionados));
 	            	System.out.println("\n***********************************************");
